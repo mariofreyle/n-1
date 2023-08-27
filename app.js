@@ -34,7 +34,7 @@ const server = http.createServer(async (req, res) => {
         response,
         length;
 
-    async function req(ip){
+    async function _fetch(ip){
     return await fetch('http://' + ip + '/downloadx' + '?v=' + random(), {
         method: 'GET',
             headers: {
@@ -43,22 +43,24 @@ const server = http.createServer(async (req, res) => {
         })
     }
     
-    for(let prop in edges){
-        response = await req(edges[prop])
-        if(response.ok){
-            length = (await response.text()).length
-        }
-        content += prop + ': refreshed ' + (response.ok ? ('✓' + ' (' + length + ')') : '✖')
-        content += "\n"
-        if(response.ok){
-            for(const pair of response.headers.entries()){
-                if(!pair[0].match(/cache-control|server|server-timing|timing-allow-origin|vary|via|x-amz-cf-id/)){
-                    content += `  ${pair[0]}: ${pair[1]}`
-                    content += "\n";
+    if(req.url.match(/\/cdn/)){
+        for(let prop in edges){
+            response = await _fetch(edges[prop])
+            if(response.ok){
+                length = (await response.text()).length
+            }
+            content += prop + ': refreshed ' + (response.ok ? ('✓' + ' (' + length + ')') : '✖')
+            content += "\n"
+            if(response.ok){
+                for(const pair of response.headers.entries()){
+                    if(!pair[0].match(/cache-control|server|server-timing|timing-allow-origin|vary|via|x-amz-cf-id/)){
+                        content += `  ${pair[0]}: ${pair[1]}`
+                        content += "\n";
+                    }
                 }
             }
+            content += "\n"
         }
-        content += "\n"
     }
 
     res.statusCode = 200;
@@ -66,8 +68,9 @@ const server = http.createServer(async (req, res) => {
     res.end(content);
 });
 
-server.timeout = 300000;
-
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+server.timeout = 300000;
+server.setTimeout(300000);
