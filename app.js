@@ -66,6 +66,8 @@ const server = http.createServer(async (req, res) => {
     res.end(content);
 });
 
+server.timeout = 300000;
+
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
