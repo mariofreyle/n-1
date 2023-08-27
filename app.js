@@ -19,37 +19,40 @@ const edges = {
     'MCT' : '18.64.142.204'
 }
 
-/*const edges = {
-    'BOG' : '13.227.5.86',
-    'SCL' : '3.162.198.91'
-}*/
-
 function random(){
     return ("000000000000000000" + Math.random().toString().slice(2)).slice(-12)
 }
 
+async function _fetch(ip){
+    return await fetch('http://' + ip + '/downloadx' + '?v=' + random(), {
+        method: 'GET',
+        headers: {
+          'Host': 'd375c8n0f70a17.cloudfront.net',
+        },
+    })
+}
+
 const server = http.createServer(async (req, res) => {
+    
+    const url = new URL('http://localhost' + req.url),
+          params = url.searchParams,
+          path = url.pathname.replace(/^\/+|\/+$/g, '');
     
     let content = '',
         response,
-        length;
+        length,
+        time,
+        param;
 
-    async function _fetch(ip){
-    return await fetch('http://' + ip + '/downloadx' + '?v=' + random(), {
-        method: 'GET',
-            headers: {
-              'Host': 'd375c8n0f70a17.cloudfront.net',
-            },
-        })
-    }
-    
-    if(req.url.match(/\/cdn/)){
-        for(let prop in edges){
-            response = await _fetch(edges[prop])
+    if(path == 'cdn'){
+        param = (params.get('pop') || "").toUpperCase();
+        if(param && param in edges){
+            time = Date.now();
+            response = await _fetch(edges[param])
             if(response.ok){
                 length = (await response.text()).length
             }
-            content += prop + ': refreshed ' + (response.ok ? ('✓' + ' (' + length + ')') : '✖')
+            content += param + ': refreshed ' + (response.ok ? ('✓' + ' (' + length + ')') : '✖') + ' in ' + ((Date.now() - time) / 1000).toFixed(1) + 's'
             content += "\n"
             if(response.ok){
                 for(const pair of response.headers.entries()){
