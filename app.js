@@ -24,7 +24,7 @@ function random(){
 }
 
 async function _fetch(ip){
-    return await fetch('http://' + ip + '/downloadx' + '?v=' + random(), {
+    return await fetch('http://' + ip + '/download' + '?v=' + random(), {
         method: 'GET',
         headers: {
           'Host': 'd375c8n0f70a17.cloudfront.net',
