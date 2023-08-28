@@ -7,6 +7,8 @@ const hostname = 'localhost';
 const port = 3000;
 const waitTime = 3600000;
 
+let response;
+
 const edges = {
     'BOG' : {ip: '13.227.5.86'},
     'LIM' : {ip: '108.158.102.122'},
@@ -38,6 +40,21 @@ async function _fetch(ip){
     })
 }
 
+function __fetch(ip){
+    fetch('http://' + ip + '/download-' + '?v=' + random(), {
+        method: 'GET',
+        headers: {
+          'Host': 'd375c8n0f70a17.cloudfront.net',
+        },
+    }).then(function(res){
+        try {
+            res.text();
+        }catch(e){ }
+    }).catch(function(error){
+        
+    });
+}
+
 const server = http.createServer(async (req, res) => {
     
     const url = new URL('http://localhost' + req.url),
@@ -51,6 +68,7 @@ const server = http.createServer(async (req, res) => {
         param;
 
     if(path == 'cdn'){
+        /*
         async function handle(){
             let pop
             
@@ -63,6 +81,7 @@ const server = http.createServer(async (req, res) => {
                     return;
                 }
                 time = Date.now()
+                /*
                 response = await _fetch(pop.ip)
                 if(response.ok){
                     length = (await response.text()).length
@@ -79,9 +98,17 @@ const server = http.createServer(async (req, res) => {
                     }
                 }
                 content += "\n"
+                
             }
         }
         await handle()
+        */
+        
+        for(let prop in edges){
+            __fetch(edges[prop].ip);
+        }
+        
+        content = 'Edges refreshed ✓'
     }
 
     res.statusCode = 200;
