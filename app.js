@@ -86,6 +86,7 @@ const server = http.createServer(async (req, res) => {
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.end(content);
 });
 
