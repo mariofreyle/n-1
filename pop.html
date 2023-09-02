@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>iSpeedTest</title>
+<script type="text/javascript">
+function done(pop){
+    top && top.postMessage && top.postMessage({message: "pop", pop: typeof pop == "string" ? pop : ""}, "*");
+}
+var xhr = new XMLHttpRequest();
+xhr.open("HEAD", "pop.html?v-" + Math.random().toString().slice(2), true);
+xhr.onload = function(){
+    done((xhr.getResponseHeader("x-served-by") || "").slice(-3));
+}
+xhr.timeout   = 10000;
+xhr.onerror   = done;
+xhr.ontimeout = done;
+xhr.send();
+</script>
+</head>
+</html>
