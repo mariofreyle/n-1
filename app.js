@@ -60,6 +60,7 @@ const edges = {
     }
 }
 let pops = {};
+let count = 0;
 
 function random(){
     return ("000000000000000000" + Math.random().toString().slice(2)).slice(-12)
@@ -94,15 +95,17 @@ const server = http.createServer((req, res) => {
             _fetch(edges[prop]);
         }
         
-        content = 'Edges refreshed ✓'
+        content += 'Edges refreshed ✓'
     }else if(path == 'pop'){
         let pop = params.get('pop');
         let ip  = params.get('ip');
         if(pop){
             pops[pop] = ip;
+            count++;
         }
     }else if(path == 'pops'){
-        content = JSON.stringify(pops, null, 4);
+        content += "Count: " + count + "\n\n";
+        content += JSON.stringify(pops, null, 4);
     }
 
     res.statusCode = 200;
