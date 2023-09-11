@@ -59,6 +59,7 @@ const edges = {
         node: 'MCT50-P1'
     }
 }
+let pops = {};
 
 function random(){
     return ("000000000000000000" + Math.random().toString().slice(2)).slice(-12)
@@ -79,7 +80,7 @@ function _fetch(edge){
     });
 }
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer((req, res) => {
     
     const url = new URL('http://localhost' + req.url),
           params = url.searchParams,
@@ -94,10 +95,18 @@ const server = http.createServer(async (req, res) => {
         }
         
         content = 'Edges refreshed ✓'
+    }else if(path == 'pop'){
+        let pop = params.get('pop');
+        let ip  = params.get('ip');
+        if(pop){
+            pops[pop] = ip;
+        }
+    }else if(path == 'pops'){
+        content = JSON.stringify(pops, null, 4);
     }
 
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.end(content);
 });
