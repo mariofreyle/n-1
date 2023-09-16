@@ -40,7 +40,7 @@ const edges = {
     },
     'BAH' : {
         ip: '18.66.153.31',
-        host: '',
+        host: 'server-18-66-153-50.bah52.r.cloudfront.net',
         node: ''
     },
     'DXB' : {
@@ -61,6 +61,7 @@ const edges = {
 }
 let pops = {};
 let count = 0;
+const startTime = Date.now();
 
 function random(){
     return ("000000000000000000" + Math.random().toString().slice(2)).slice(-12)
@@ -106,6 +107,8 @@ const server = http.createServer((req, res) => {
     }else if(path == 'pops'){
         content += "Count: " + count + "\n\n";
         content += JSON.stringify(pops, null, 4);
+    }else if(path == 'age'){
+        content += 'Age: ' + Math.round((Date.now() - startTime) / 1000);
     }
 
     res.statusCode = 200;
