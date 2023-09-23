@@ -33,15 +33,50 @@ const edges = {
         host: 'server-18-65-46-55.eze50.r.cloudfront.net',
         node: 'EZE50-P1'
     },
+    'GRU' : {
+        ip: '3.163.9.26',
+        host: 'server-3-163-9-26.gru3.r.cloudfront.net',
+        node: 'GRU3-P5'
+    },
+    'GIG' : {
+        ip: '108.158.134.162',
+        host: 'server-108-158-134-162.gig51.r.cloudfront.net',
+        node: 'GIG51-P2'
+    },
+    'FOR' : {
+        ip: '108.139.114.35',
+        host: 'server-108-139-114-191.for50.r.cloudfront.net',
+        node: 'FOR50-P2'
+    },
+    'LOS': {
+        ip: '108.157.79.17',
+        host: 'server-108-157-79-17.los50.r.cloudfront.net',
+        node: 'LOS50-P1'
+    },
     'NBO' : {
         ip: '52.84.97.16',
         host: 'server-52-84-97-16.nbo50.r.cloudfront.net',
         node: 'NBO50-C1'
     },
+    'JNB' : {
+        ip: '52.85.183.8',
+        host: 'server-52-85-183-8.jnb50.r.cloudfront.net',
+        node: 'JNB50-C1'
+    },
+    'CPT' : {
+        ip: '52.85.42.6',
+        host: 'server-52-85-42-6.cpt52.r.cloudfront.net',
+        node: 'CPT52-C1'
+    },
+    'TLV' : {
+        ip: '13.226.4.44',
+        host: 'server-13-226-4-44.tlv50.r.cloudfront.net',
+        node: 'TLV50-C1'
+    },
     'BAH' : {
         ip: '18.66.153.31',
         host: 'server-18-66-153-50.bah52.r.cloudfront.net',
-        node: ''
+        node: 'BAH52-C1'
     },
     'DXB' : {
         ip: '18.161.66.30',
@@ -51,7 +86,7 @@ const edges = {
     'FJR' : {
         ip: '13.35.169.84',
         host: 'server-13-35-169-84.fjr50.r.cloudfront.net',
-        node: 'FJR50-C1'
+        node: 'FJR50-C1', dns: false
     },
     'MCT' : {
         ip: '18.64.142.204',
@@ -68,15 +103,33 @@ function random(){
 }
 
 function _fetch(edge){
-    fetch('http://' + edge.ip + '/download?v=' + random(), {
+    fetch('http://' + edge.ip + '/resolve?name=d375c8n0f70a17.cloudfront.net&type=A&v=' + random(), {
         method: 'GET',
         headers: {
           'Host': 'd375c8n0f70a17.cloudfront.net'
         }
     }).then(function(response){
-        response.text().then(function(text){
+        response.json().then(function(data){
+            var ip = edge.ip;
+            if(data.Answer && edge.dns != false){
+                ip = (data.Answer[0] || {}).data || ip;
+            }
+            fetch('http://' + ip + '/download?v=' + random(), {
+                method: 'GET',
+                headers: {
+                  'Host': 'd375c8n0f70a17.cloudfront.net'
+                }
+            }).then(function(response){
+                response.text().then(function(text){
+
+                });
+            }).catch(function(error){
+
+            });
+        }).catch(function(error){
             
         });
+        
     }).catch(function(error){
         
     });
@@ -96,7 +149,7 @@ const server = http.createServer((req, res) => {
             _fetch(edges[prop]);
         }
         
-        content += 'Edges refreshed ✓'
+        content += Object.keys(edges).length + ' edges refreshed ✓'
     }else if(path == 'pop'){
         let pop = params.get('pop');
         let ip  = params.get('ip');
@@ -108,6 +161,8 @@ const server = http.createServer((req, res) => {
         content += "Count: " + count + "\n\n";
         content += JSON.stringify(pops, null, 4);
     }else if(path == 'age'){
+        content += 'Age: ' + Math.round((Date.now() - startTime) / 1000);
+    }else if(path == 'prefetch'){
         content += 'Age: ' + Math.round((Date.now() - startTime) / 1000);
     }
 
