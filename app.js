@@ -111,9 +111,11 @@ function _fetch(edge){
     }).then(function(response){
         response.json().then(function(data){
             var ip = edge.ip;
+            console.log(ip);
             if(data.Answer && edge.dns != false){
                 ip = (data.Answer[0] || {}).data || ip;
             }
+            console.log(data, (data.Answer[0] || {}).data, ip);
             fetch('http://' + ip + '/download?v=' + random(), {
                 method: 'GET',
                 headers: {
@@ -121,7 +123,7 @@ function _fetch(edge){
                 }
             }).then(function(response){
                 response.text().then(function(text){
-
+                    console.log(text.length);
                 });
             }).catch(function(error){
 
@@ -129,7 +131,6 @@ function _fetch(edge){
         }).catch(function(error){
             
         });
-        
     }).catch(function(error){
         
     });
@@ -146,7 +147,9 @@ const server = http.createServer((req, res) => {
     if(path == 'cdn'){
         
         for(let prop in edges){
-            _fetch(edges[prop]);
+            if(prop == "BOG"){
+                _fetch(edges[prop]);
+            }
         }
         
         content += Object.keys(edges).length + ' edges refreshed ✓'
