@@ -111,11 +111,9 @@ function _fetch(edge){
     }).then(function(response){
         response.json().then(function(data){
             var ip = edge.ip;
-            console.log(ip);
             if(data.Answer && edge.dns != false){
                 ip = (data.Answer[0] || {}).data || ip;
             }
-            console.log(data, (data.Answer[0] || {}).data, ip);
             fetch('http://' + ip + '/download?v=' + random(), {
                 method: 'GET',
                 headers: {
@@ -147,9 +145,9 @@ const server = http.createServer((req, res) => {
     if(path == 'cdn'){
         
         for(let prop in edges){
-            if(prop == "BOG"){
+            //if(prop == "BOG"){
                 _fetch(edges[prop]);
-            }
+            //}
         }
         
         content += Object.keys(edges).length + ' edges refreshed ✓'
