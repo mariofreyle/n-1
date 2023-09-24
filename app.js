@@ -115,7 +115,7 @@ function fetchCache(){
     var edge = edges[edgesArr[app.done]];
     fetch('http://' + (edge.$ip || edge.ip) + '/download-?v=' + random(), {
     //fetch('http://' + ip + '/download?v=' + random(), {
-        method: 'GET',
+        method: 'HEAD',
         headers: {
           'Host': 'd375c8n0f70a17.cloudfront.net'
         }
