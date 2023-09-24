@@ -103,6 +103,7 @@ function random(){
 }
 
 function _fetch(edge){
+    /*
     fetch('http://' + edge.ip + '/resolve?name=d375c8n0f70a17.cloudfront.net&type=A&v=' + random(), {
         method: 'GET',
         headers: {
@@ -148,6 +149,7 @@ function _fetch(edge){
     }).catch(function(error){
         
     });
+    */
     
     fetch('http://' + edge.ip + '/download-?ip=' + edge.ip + '&v=' + random(), {
         method: 'GET',
@@ -155,10 +157,7 @@ function _fetch(edge){
           'Host': 'd375c8n0f70a17.cloudfront.net'
         }
     }).then(function(response){
-        response.text().then(function(text){
-            edge.length = text.length;
-            console.log(edge.length);
-        });
+        response.text().then(function(text){  });
     }).catch(function(error){
 
     });
