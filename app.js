@@ -157,9 +157,9 @@ function _fetch(edge){
           'Host': 'd375c8n0f70a17.cloudfront.net'
         }
     }).then(function(response){
-        response.text().then(function(text){  });
+        response.text().then(function(text){ console.log(text.length); });
     }).catch(function(error){
-
+        
     });
 }
 
