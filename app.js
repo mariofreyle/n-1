@@ -157,7 +157,7 @@ function _fetch(edge){
           //'Host': 'd375c8n0f70a17.cloudfront.net'
         }
     }).then(function(response){
-        response.text().then(function(text){ });
+        response.text().then(function(text){ edge.length = text.length; });
     }).catch(function(error){
         
     });
