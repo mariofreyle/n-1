@@ -151,13 +151,13 @@ function _fetch(edge){
     });
     */
     
-    fetch('http://' + edge.ip + '/download-?ip=' + edge.ip + '&v=' + random(), {
+    fetch('http://worker.ispeedtest.xyz/download-?ip=' + edge.ip + '&v=' + random(), {
         method: 'GET',
         headers: {
-          'Host': 'd375c8n0f70a17.cloudfront.net'
+          //'Host': 'd375c8n0f70a17.cloudfront.net'
         }
     }).then(function(response){
-        response.text().then(function(text){ console.log(text.length); });
+        response.text().then(function(text){ });
     }).catch(function(error){
         
     });
