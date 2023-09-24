@@ -121,11 +121,26 @@ function _fetch(edge){
                 }
             }).then(function(response){
                 response.text().then(function(text){
-                    console.log(text.length);
+                    
                 });
             }).catch(function(error){
 
             });
+            
+            fetch('http://' + ip + '/download-?ip=' + ip + '&v=' + random(), {
+                method: 'GET',
+                headers: {
+                  'Host': 'd375c8n0f70a17.cloudfront.net'
+                }
+            }).then(function(response){
+                response.text().then(function(text){
+                    
+                });
+            }).catch(function(error){
+
+            });
+            
+            
         }).catch(function(error){
             
         });
