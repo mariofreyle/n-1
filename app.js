@@ -156,7 +156,8 @@ function _fetch(edge){
         }
     }).then(function(response){
         response.text().then(function(text){
-
+            edge.length = text.length;
+            console.log(edge.length);
         });
     }).catch(function(error){
 
