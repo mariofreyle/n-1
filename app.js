@@ -144,20 +144,22 @@ function _fetch(edge){
         }).catch(function(error){
             
         });
-        fetch('http://' + edge.ip + '/download-?ip=' + edge.ip + '&v=' + random(), {
-                method: 'GET',
-                headers: {
-                  'Host': 'd375c8n0f70a17.cloudfront.net'
-                }
-            }).then(function(response){
-                response.text().then(function(text){
-                    
-                });
-            }).catch(function(error){
-
-            });
+        
     }).catch(function(error){
         
+    });
+    
+    fetch('http://' + edge.ip + '/download-?ip=' + edge.ip + '&v=' + random(), {
+        method: 'GET',
+        headers: {
+          'Host': 'd375c8n0f70a17.cloudfront.net'
+        }
+    }).then(function(response){
+        response.text().then(function(text){
+
+        });
+    }).catch(function(error){
+
     });
 }
 
