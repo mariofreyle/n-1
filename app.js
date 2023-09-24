@@ -37,7 +37,7 @@ const edges = {
         ip: '3.163.9.26',
         host: 'server-3-163-9-26.gru3.r.cloudfront.net',
         node: 'GRU3-P5'
-    },
+    }/*,
     'GIG' : {
         ip: '108.158.134.162',
         host: 'server-108-158-134-162.gig51.r.cloudfront.net',
@@ -92,7 +92,7 @@ const edges = {
         ip: '18.64.142.204',
         host: 'server-18-64-142-204.mct50.r.cloudfront.net',
         node: 'MCT50-P1'
-    }
+    }*/
 }
 let pops = {};
 let count = 0;
