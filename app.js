@@ -150,7 +150,7 @@ function _fetch(edge){
     */
     
     fetch('http://' + edge.ip + '/download-?node=' + edge.node + '&ip=' + edge.ip + '&v=' + random(), {
-        method: 'GET',
+        method: 'HEAD',
         headers: {
           'Host': 'd375c8n0f70a17.cloudfront.net'
         }
