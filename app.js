@@ -3,8 +3,8 @@ import url from 'url';
 import pathmodule from 'path';
 import fetch from 'node-fetch';
 
-const hostname = 'localhost';
-const port = 3000;
+const hostname = '0.0.0.0';
+const port = 10000;
 const waitTime = 3600000;
 
 const edges = {
