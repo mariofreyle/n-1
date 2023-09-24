@@ -94,6 +94,8 @@ const edges = {
         node: 'MCT50-P1'
     }
 }
+let edgesArr = Object.keys(edges);
+let app = {};
 let pops = {};
 let count = 0;
 const startTime = Date.now();
@@ -101,9 +103,40 @@ const startTime = Date.now();
 function random(){
     return ("000000000000000000" + Math.random().toString().slice(2)).slice(-12)
 }
-
-function _fetch(edge){
-    /*
+function fetchCache(){
+    function done(){
+        app.done++;
+        if(app.done == edgesArr.length){
+            console.log("All Cache Fetched.");
+        }else{
+            fetchCache();
+        }
+    }
+    var edge = edges[edgesArr[app.done]];
+    fetch('http://' + (edge.$ip || edge.ip) + '/download-?v=' + random(), {
+    //fetch('http://' + ip + '/download?v=' + random(), {
+        method: 'GET',
+        headers: {
+          'Host': 'd375c8n0f70a17.cloudfront.net'
+        }
+    }).then(function(response){
+        response.text().then(function(text){
+            //console.log(app.done, text.length);
+            done();
+        });
+    }).catch(function(error){
+        done();
+    });
+}
+function fetchDns(edge){
+    function done(){
+        app.done++;
+        if(app.done == edgesArr.length){
+            app.done = 0;
+            fetchCache();
+            console.log("All DNS Fetched.");
+        }
+    }
     fetch('http://' + edge.ip + '/resolve?name=d375c8n0f70a17.cloudfront.net&type=A&v=' + random(), {
         method: 'GET',
         headers: {
@@ -115,49 +148,14 @@ function _fetch(edge){
             if(data.Answer && edge.dns != false){
                 ip = (data.Answer[0] || {}).data || ip;
             }
-            fetch('http://' + ip + '/download?v=' + random(), {
-                method: 'GET',
-                headers: {
-                  'Host': 'd375c8n0f70a17.cloudfront.net'
-                }
-            }).then(function(response){
-                response.text().then(function(text){ edge.length = text.length; });
-            }).catch(function(error){
-
-            });
-            
-            fetch('http://' + ip + '/download-?ip=' + ip + '&v=' + random(), {
-                method: 'GET',
-                headers: {
-                  'Host': 'd375c8n0f70a17.cloudfront.net'
-                }
-            }).then(function(response){
-                response.text().then(function(text){
-                    
-                });
-            }).catch(function(error){
-                
-            });
-            
-            
+            edge.$ip = ip;
+            //console.log(ip);
+            done();
         }).catch(function(error){
-            
+            done();
         });
-        
     }).catch(function(error){
-        
-    });
-    */
-    
-    fetch('http://' + edge.ip + '/download-?node=' + edge.node + '&ip=' + edge.ip + '&v=' + random(), {
-        method: 'HEAD',
-        headers: {
-          'Host': 'd375c8n0f70a17.cloudfront.net'
-        }
-    }).then(function(response){
-        response.text().then(function(text){ edge.length = text.length; });
-    }).catch(function(error){
-        
+        done();
     });
 }
 
@@ -170,14 +168,12 @@ const server = http.createServer((req, res) => {
     let content = '';
 
     if(path == 'cdn'){
-        
+        app.done = 0;
         for(let prop in edges){
-            //if(prop == "BOG"){
-                _fetch(edges[prop]);
-            //}
+            fetchDns(edges[prop]);
         }
         
-        content += Object.keys(edges).length + ' edges refreshed ✓'
+        content += edgesArr.length + ' edges refreshed ✓';
     }else if(path == 'pop'){
         let pop = params.get('pop');
         let ip  = params.get('ip');
