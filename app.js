@@ -37,7 +37,7 @@ const edges = {
         ip: '3.163.9.26',
         host: 'server-3-163-9-26.gru3.r.cloudfront.net',
         node: 'GRU3-P5'
-    }/*,
+    },
     'GIG' : {
         ip: '108.158.134.162',
         host: 'server-108-158-134-162.gig51.r.cloudfront.net',
@@ -92,7 +92,7 @@ const edges = {
         ip: '18.64.142.204',
         host: 'server-18-64-142-204.mct50.r.cloudfront.net',
         node: 'MCT50-P1'
-    }*/
+    }
 }
 let pops = {};
 let count = 0;
@@ -121,9 +121,7 @@ function _fetch(edge){
                   'Host': 'd375c8n0f70a17.cloudfront.net'
                 }
             }).then(function(response){
-                response.text().then(function(text){
-                    
-                });
+                response.text().then(function(text){ edge.length = text.length; });
             }).catch(function(error){
 
             });
@@ -138,7 +136,7 @@ function _fetch(edge){
                     
                 });
             }).catch(function(error){
-
+                
             });
             
             
@@ -151,10 +149,10 @@ function _fetch(edge){
     });
     */
     
-    fetch('http://worker.ispeedtest.xyz/download-?node=' + edge.node + '&ip=' + edge.ip + '&v=' + random(), {
+    fetch('http://' + edge.ip + '/download-?node=' + edge.node + '&ip=' + edge.ip + '&v=' + random(), {
         method: 'GET',
         headers: {
-          //'Host': 'd375c8n0f70a17.cloudfront.net'
+          'Host': 'd375c8n0f70a17.cloudfront.net'
         }
     }).then(function(response){
         response.text().then(function(text){ edge.length = text.length; });
