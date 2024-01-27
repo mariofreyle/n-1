@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <title>iSpeedTest</title>
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=5, minimum-scale=1">
+<meta charset="UTF-8">
+<title>iSpeedTest</title>
+<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=5, minimum-scale=1">
 </head>
 <body>
 <script type="text/javascript">
@@ -49,15 +49,14 @@
                     (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
                 );
             }
-            sendMessage({message: "ping:time", time: ping.time, request: ping.request});
+            sendMessage({message: "ping:time", time: Math.max(ping.time, 0), request: Math.max(ping.request, 0)});
         };
         xhr.onerror   = finish;
         xhr.ontimeout = finish;
 
         xhr.open(props.method, props.url, true);
-        xhr.send();
-        
         sendTime = timenow();
+        xhr.send();
     }
     
     fill("performance", {});
