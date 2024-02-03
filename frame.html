@@ -49,6 +49,7 @@
                     (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
                 );
             }
+            console.log(ping.request, ping.time);
             sendMessage({message: "ping:time", time: Math.max(ping.time, 0), request: Math.max(ping.request, 0)});
         };
         xhr.onerror   = finish;
@@ -60,29 +61,24 @@
     }
     
     fill("performance", {});
-    fill("performance.getEntriesByName", function(){
-        return [];
-    });
-    fill("performance.clearResourceTimings", function(){
-    });
+    fill("performance.getEntriesByName", function(){ return []; });
+    fill("performance.clearResourceTimings", function(){});
     fill("top", {});
-    fill("top.postMessage", function(){
-    });
+    fill("top.postMessage", function(){});
     
     window.addEventListener("message", function(e){
         var data = e && e.data ? e.data : {};
         
-        if(data.message == "ping:send"){
+        if(data.message == "ping:hello"){
+            sendMessage({message: "ping:hello"});
+        }else if(data.message == "ping:send"){
             send({url: data.url, method: data.method});
-        }
-        if(data.message == "ping:finish"){
+        }else if(data.message == "ping:finish"){
             if(xhr){
                 xhr.abort();
             }
         }
     });
-    
-    sendMessage({message: "frame:loaded"});
 })();
 </script>
 </body>
