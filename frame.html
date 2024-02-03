@@ -49,7 +49,6 @@
                     (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
                 );
             }
-            console.log(ping.request, ping.time);
             sendMessage({message: "ping:time", time: Math.max(ping.time, 0), request: Math.max(ping.request, 0)});
         };
         xhr.onerror   = finish;
