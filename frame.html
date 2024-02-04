@@ -28,6 +28,7 @@
         }
     }
     function sendMessage(data){
+        data.referer = location.href;
         window.top.postMessage(data, "*");
     }
     function finish(){
