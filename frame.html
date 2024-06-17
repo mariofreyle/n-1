@@ -13,8 +13,7 @@
       referer = location.href,
       ping = {},
       xhr,
-      timing,
-      sendTime;
+      timing;
   
   function sendMessage(data){
     data.referer = referer;
@@ -30,13 +29,13 @@
 
     xhr.onload = function(){
       if(xhr.status != 200){
-          finish();
-          return;
+        finish();
+        return;
       }
-      ping.time = timenow() - sendTime;
+      ping.time = timenow() - ping.sendTime;
       if(timing = performance.getEntriesByName(xhr.responseURL)[0]){
         ping.time = round(
-            (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
+          (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
         );
       }
       sendMessage({message: "ping:time", time: Math.max(ping.time, 0)});
@@ -45,7 +44,7 @@
     xhr.ontimeout = finish;
 
     xhr.open(props.method, props.url, true);
-    sendTime = timenow();
+    ping.sendTime = timenow();
     xhr.send();
   }
   
@@ -57,9 +56,7 @@
     }else if(data.message == "ping:send"){
       send({url: data.url, method: data.method});
     }else if(data.message == "ping:finish"){
-      if(xhr){
-        xhr.abort();
-      }
+      xhr && xhr.abort();
     }
   });
 })();
