@@ -8,77 +8,60 @@
 <body>
 <script type="text/javascript">
 (function(){
-    var timenow = Date.now,
-        round = Math.round,
-        ping = {},
-        xhr,
-        timing,
-        sendTime;
+  var timenow = Date.now,
+      round = Math.round,
+      referer = location.href,
+      ping = {},
+      xhr,
+      timing,
+      sendTime;
+  
+  function sendMessage(data){
+    data.referer = referer;
+    window.top.postMessage(data, "*");
+  }
+  function finish(){
+    sendMessage({message: "ping:finish"});
+  }
+  function send(props){
+    xhr = new XMLHttpRequest();
     
-    function fill(elem, def){
-        elem = elem.split(".");
-        if(elem.length == 1){
-            if(!window[elem[0]]){
-                window[elem[0]] = def;
-            }
-        }else{
-            if(!window[elem[0]][elem[1]]){
-                window[elem[0]][elem[1]] = def;
-            }
-        }
-    }
-    function sendMessage(data){
-        data.referer = location.href;
-        window.top.postMessage(data, "*");
-    }
-    function finish(){
-        sendMessage({message: "ping:finish"});
-    }
-    function send(props){
-        xhr = new XMLHttpRequest();
-        
-        performance.clearResourceTimings();
+    performance.clearResourceTimings();
 
-        xhr.onload = function(){
-            if(xhr.status != 200){
-                finish();
-                return;
-            }
-            ping.time = ping.request = timenow() - sendTime;
-            if(timing = performance.getEntriesByName(xhr.responseURL)[0]){
-                ping.time = round(
-                    (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
-                );
-            }
-            sendMessage({message: "ping:time", time: Math.max(ping.time, 0), request: Math.max(ping.request, 0)});
-        };
-        xhr.onerror   = finish;
-        xhr.ontimeout = finish;
+    xhr.onload = function(){
+      if(xhr.status != 200){
+          finish();
+          return;
+      }
+      ping.time = timenow() - sendTime;
+      if(timing = performance.getEntriesByName(xhr.responseURL)[0]){
+        ping.time = round(
+            (timing.responseStart || timing.responseEnd) - (timing.requestStart || timing.fetchStart)
+        );
+      }
+      sendMessage({message: "ping:time", time: Math.max(ping.time, 0)});
+    };
+    xhr.onerror   = finish;
+    xhr.ontimeout = finish;
 
-        xhr.open(props.method, props.url, true);
-        sendTime = timenow();
-        xhr.send();
+    xhr.open(props.method, props.url, true);
+    sendTime = timenow();
+    xhr.send();
+  }
+  
+  window.addEventListener("message", function(e){
+    var data = e && e.data || {};
+    
+    if(data.message == "ping:hello"){
+      sendMessage({message: "ping:hello"});
+    }else if(data.message == "ping:send"){
+      send({url: data.url, method: data.method});
+    }else if(data.message == "ping:finish"){
+      if(xhr){
+        xhr.abort();
+      }
     }
-    
-    fill("performance", {});
-    fill("performance.getEntriesByName", function(){ return []; });
-    fill("performance.clearResourceTimings", function(){});
-    fill("top", {});
-    fill("top.postMessage", function(){});
-    
-    window.addEventListener("message", function(e){
-        var data = e && e.data ? e.data : {};
-        
-        if(data.message == "ping:hello"){
-            sendMessage({message: "ping:hello"});
-        }else if(data.message == "ping:send"){
-            send({url: data.url, method: data.method});
-        }else if(data.message == "ping:finish"){
-            if(xhr){
-                xhr.abort();
-            }
-        }
-    });
+  });
 })();
 </script>
 </body>
